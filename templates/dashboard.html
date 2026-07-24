@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SherlockLabs Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <h1>CONTROL CENTER</h1>
+        <p class="tagline">SherlockLabs infrastructure</p>
+        <p>{{ time }}</p>
+
+        <div class="services">
+
+            <div class="card">
+                <h2>Production</h2>
+                <p>PC1</p>
+                <span class="online">Online</span>
+            </div>
+
+            <div class="card">
+                <h2>Lab</h2>
+                <p>PC2</p>
+                <span class="offline">Offline</span>
+            </div>
+
+            <div class="card">
+                <h2>Mobile Node</h2>
+                <p>Galaxy J7</p>
+                <span class="offline">Offline</span>
+            </div>
+
+        </div>
+
+        <a href="/" class="btn">Back Home</a>
+
+    </div>
+
+</body>
+
+</html>
