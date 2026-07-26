@@ -4,18 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SherlockLabs Dashboard</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
 
 <body>
 
+    <!-- Small live system monitor -->
+    <div class="system-monitor">
+
+        <h3>System Monitor</h3>
+
+        <div class="monitor-row">
+            <span>CPU</span>
+            <strong>{{ cpu_usage }}%</strong>
+        </div>
+
+        <div class="monitor-row">
+            <span>RAM</span>
+            <strong>{{ ram_usage }}%</strong>
+        </div>
+
+        <div class="monitor-row">
+            <span>Disk</span>
+            <strong>{{ disk_usage }}%</strong>
+        </div>
+
+    </div>
+
+
+    <!-- Main dashboard -->
     <div class="dashboard">
 
         <h1>CONTROL CENTER</h1>
-        <p class="tagline">SherlockLabs infrastructure</p>
-        <p>{{ time }}</p>
+
+        <p class="tagline">SherlockLabs Infrastructure</p>
+
+        <div class="server-details">
+            <p><strong>Hostname:</strong> {{ hostname }}</p>
+            <p><strong>Operating System:</strong> {{ os_name }}</p>
+            <p><strong>Python:</strong> {{ python_version }}</p>
+            <p><strong>Current Time:</strong> {{ time }}</p>
+        </div>
+
 
         <div class="services">
 
@@ -26,20 +62,18 @@
             </div>
 
             <div class="card">
-                <h2>Lab</h2>
+                <h2>Laboratory</h2>
                 <p>PC2</p>
-                <span class="offline">Offline</span>
+                <span class="online">Online</span>
             </div>
 
             <div class="card">
-                <h2>Mobile Node</h2>
-                <p>Galaxy J7</p>
-                <span class="offline">Offline</span>
+                <h2>Edge Server</h2>
+                <p>Samsung J7</p>
+                <span class="online">Online</span>
             </div>
 
         </div>
-
-        <a href="/" class="btn">Back Home</a>
 
     </div>
 
