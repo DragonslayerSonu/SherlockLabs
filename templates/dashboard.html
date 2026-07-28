@@ -21,20 +21,27 @@
         <h3>System Monitor</h3>
 
         <div class="monitor-row">
-            <span>CPU</span>
-            <strong>{{ cpu_usage }}%</strong>
-        </div>
+    <span>CPU</span>
+    <strong id="cpu">{{ cpu_usage }}%</strong>
+</div>
 
+<div class="monitor-row">
+    <span>RAM</span>
+    <strong id="ram">{{ ram_usage }}%</strong>
+</div>
+
+<div class="monitor-row">
+    <span>Disk</span>
+    <strong id="disk">{{ disk_usage }}%</strong>
+</div>
         <div class="monitor-row">
-            <span>RAM</span>
-            <strong>{{ ram_usage }}%</strong>
-        </div>
-
-        <div class="monitor-row">
-            <span>Disk</span>
-            <strong>{{ disk_usage }}%</strong>
-        </div>
-
+    <span>Uptime</span>
+    <strong>{{ uptime }}</strong>
+</div> 
+<div class="monitor-row">
+    <span>Nginx</span>
+    <strong id="nginx">Checking...</strong>
+</div>
     </div>
 
 
@@ -75,7 +82,23 @@
 
         </div>
 
-    </div>
+<script>
+    async function updateMetrics() {
+
+        const response = await fetch("/api/metrics");
+        const data = await response.json();
+
+        document.getElementById("cpu").textContent = data.cpu + "%";
+        document.getElementById("ram").textContent = data.ram + "%";
+        document.getElementById("disk").textContent = data.disk + "%";
+        document.getElementById("nginx").textContent= data.nginx ? "Online" : "offline";
+
+    }
+
+    updateMetrics();
+
+    setInterval(updateMetrics, 2000);
+</script>    </div>
 
 </body>
 
