@@ -1,0 +1,9 @@
+A Docker image is a read-only blueprint containing an application, its runtime, dependencies, and configuration.
+
+A Docker container is a running or stopped instance created from a Docker image.
+
+A Dockerfile is a text file containing instructions Docker follows to build an image.
+
+Docker Compose uses a compose.yaml file to define and manage multiple connected services together.
+
+In SherlockLabs, Nginx received requests on PC1 port 8080 and forwarded them to the Flask API service on port 5000, which returned a JSON response.
