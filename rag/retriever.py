@@ -2,6 +2,7 @@ from pathlib import Path
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from ollama import chat
 
 
 # Read the knowledge-base document.
@@ -27,10 +28,47 @@ scores = cosine_similarity(question_vector, chunk_vectors)[0]
 top_k = 3
 ranked_indices = scores.argsort()[::-1]
 top_indices = ranked_indices[:top_k]
+# Collect the actual text of the selected chunks.
+retrieved_chunks = [chunks[index] for index in top_indices]
 
+# Join the selected chunks into one context string.
+context = "\n\n".join(retrieved_chunks)
+# Build the complete instruction package for the future LLM.
+prompt = f"""
+Answer the question using only the context below.
+
+Context:
+{context}
+
+Question:
+{question}
+
+Answer:
+""".strip()
 print(f"\nTop {top_k} relevant chunks:")
 
 for rank, index in enumerate(top_indices, start=1):
     print(f"\nRank {rank}")
     print(chunks[index])
     print(f"Similarity score: {scores[index]:.3f}")
+print("\nCombined context:")
+print(context)
+print("\nFinal prompt for the future LLM:")
+print(prompt)
+# Send the completed prompt to the local Qwen model.
+response = chat(
+    model="qwen3.5:4b",
+    messages=[
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ],
+    think=False
+)
+
+# Extract and display only the model's final answer.
+generated_answer = response.message.content
+
+print("\nGenerated answer:")
+print(generated_answer)
