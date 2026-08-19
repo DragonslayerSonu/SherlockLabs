@@ -1,3 +1,5 @@
+import sys
+
 from pathlib import Path
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -23,11 +25,23 @@ chunk_vectors = vectorizer.fit_transform(chunks)
 question = input("Ask a question: ")
 question_vector = vectorizer.transform([question])
 # Compare the question with every chunk.
+
 scores = cosine_similarity(question_vector, chunk_vectors)[0]
+# Stop retrieval when even the best chunk is not relevant enough.
+minimum_score=0.15
+best_score=scores.max()
+if best_score < minimum_score:
+   print("\nI could not find relevant information in the knowledge base.")
+   sys.exit(0)
 # Rank all chunks from highest similarity to lowest.
 top_k = 3
 ranked_indices = scores.argsort()[::-1]
-top_indices = ranked_indices[:top_k]
+# Keep up to three chunks, but only if they pass the threshold.
+top_indices = [
+    index
+    for index in ranked_indices[:top_k]
+    if scores[index] >= minimum_score
+]
 # Collect the actual text of the selected chunks.
 retrieved_chunks = [chunks[index] for index in top_indices]
 
@@ -72,3 +86,8 @@ generated_answer = response.message.content
 
 print("\nGenerated answer:")
 print(generated_answer)
+
+print("\nSources:")
+
+for index in top_indices:
+    print(f"- Chunk {index + 1} (similarity: {scores[index]:.3f})")
