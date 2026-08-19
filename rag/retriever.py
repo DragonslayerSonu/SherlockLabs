@@ -5,10 +5,12 @@ from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from ollama import chat
-
+# Control whether internal RAG details are displayed.
+DEBUG_MODE = False
 
 # Read the knowledge-base document.
-document = Path("documents/docker_basics.txt").read_text(encoding="utf-8")
+document_path = Path("documents/docker_basics.txt")
+document = document_path.read_text(encoding="utf-8")
 
 # Each paragraph becomes one searchable chunk.
 chunks = [
@@ -59,16 +61,20 @@ Question:
 
 Answer:
 """.strip()
-print(f"\nTop {top_k} relevant chunks:")
+# Show the internal retrieval process only when debugging is enabled.
+if DEBUG_MODE:
+    print(f"\nTop {len(top_indices)} relevant chunks:")
 
-for rank, index in enumerate(top_indices, start=1):
-    print(f"\nRank {rank}")
-    print(chunks[index])
-    print(f"Similarity score: {scores[index]:.3f}")
-print("\nCombined context:")
-print(context)
-print("\nFinal prompt for the future LLM:")
-print(prompt)
+    for rank, index in enumerate(top_indices, start=1):
+        print(f"\nRank {rank}")
+        print(chunks[index])
+        print(f"Similarity score: {scores[index]:.3f}")
+
+    print("\nCombined context:")
+    print(context)
+
+    print("\nFinal prompt for the LLM:")
+    print(prompt)
 # Send the completed prompt to the local Qwen model.
 response = chat(
     model="qwen3.5:4b",
@@ -90,4 +96,8 @@ print(generated_answer)
 print("\nSources:")
 
 for index in top_indices:
-    print(f"- Chunk {index + 1} (similarity: {scores[index]:.3f})")
+    print(
+    f"- {document_path.name}, "
+    f"Chunk {index + 1} "
+    f"(similarity: {scores[index]:.3f})"
+)
